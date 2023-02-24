@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>promise api</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-5">   
+        <Button id="getData" class="btn btn-danger">get</Button>
+        <Button id="postData" class="btn btn-dark">post</Button>
+        <div id="text">
+            
+        </div>
+    </div>
+    <script>
+        document.getElementById('getData').addEventListener('click', getData)
+        document.getElementById('postData').addEventListener('click', postData)
+
+        function setxml(method,url,data){
+            return new Promise((resolve,rejcet)=>{
+                let req = new XMLHttpRequest()
+                req.open(method,url)
+                {data? req.setRequestHeader('Content-Type','application/json'):""}
+                req.onload=()=>{
+                    resolve(req.response)
+                }
+                req.responseType='json'
+                req.onerror=()=>{
+                    rejcet(console.log(error))
+                }
+                req.send(JSON.stringify(data))
+            })
+        }
+
+        function getData() {
+            let text =''
+            setxml('GET','https://jsonplaceholder.typicode.com/posts').then((res)=>{
+                res.map((elem)=>{
+                    text+=`<div class="bg-primary mt-1 p-3 rounded-3 flex-column"><div>${elem.id}</div><div>${elem.title}</div></div>`
+            })
+                document.getElementById('text').innerHTML=text 
+            })
+        }
+        function postData(){
+            data={id:1,title:'hello world'}
+            setxml('POST','https://jsonplaceholder.typicode.com/posts',data).then((res)=>{
+                console.log(res)
+            }).catch((err)=>{
+                console.log(err)
+            })
+            
+        }
+
+    </script>
+</body>
+</html>
